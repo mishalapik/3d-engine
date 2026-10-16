@@ -56,7 +56,7 @@ def decompose(w,u,v):
 
 def is_inside_polygon(P:tuple,polygon:list[tuple])->bool:
     n = len(polygon)
-    for i in range(len(polygon)):
+    for i in range(0,len(polygon),2):
         ancor = polygon[i]
         prv = polygon[(i - 1) % n]
         nxt = polygon[(i + 1) % n]
