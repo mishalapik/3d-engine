@@ -5,7 +5,7 @@ from math_functions import plane_from_points,line_plane_intersection,line_from_p
 
 def render(camera:Camera,object:Object3D,screenDim:tuple)->str:
     pixels_vertical,pixels_horizontal = screenDim
-
+    
     pixels = []
     for _ in range(pixels_vertical):
         pixels.append(([' ']*pixels_horizontal))
@@ -23,8 +23,12 @@ def render(camera:Camera,object:Object3D,screenDim:tuple)->str:
             for f in object.faces:
                 curr_face = [world_vertices[x] for x in f]
                 plane = plane_from_points(curr_face[0],curr_face[1],curr_face[2])
-    
-                line = line_from_points((0,0,0),pixel_coord)
+                
+                camera_ancor_coord = tuple(camera.coord)
+                # print(camera_ancor_coord,pixel_coord)
+                # break
+                line = line_from_points(camera_ancor_coord,pixel_coord)
+                
                 intersection = line_plane_intersection(
                     n = plane[0],
                     D = plane[1],
@@ -37,9 +41,11 @@ def render(camera:Camera,object:Object3D,screenDim:tuple)->str:
                 inside = is_inside_polygon(intersection,curr_face)
     
                 if inside:
-                    pixels[i][j] = '0'
+                    pixels[i][j] = '.'
                     # Если пиксель уже закрашен дальше можно не итерироваться
                     break
+        #     break
+        # break
 
     image = '\n'.join([''.join(s) for s in pixels][::-1])
     return image
