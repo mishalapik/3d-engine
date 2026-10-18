@@ -4,6 +4,8 @@ from core import render
 from object_storage import cube,polygonObject,pyramid,prism
 from models.camera import Camera
 from keyboard_reader import get_keys
+import time
+
 # Выбор модели. Доступные: cube,polygonObject,pyramid,prism
 curr_object = cube
 
@@ -17,7 +19,14 @@ camera = Camera(
 MOVE_STEP = 0.5
 TURN_STEP = 0.1
 
+curr_seconds = int(time.time())
+fps = 0
 while True:
+    if int(time.time()) == curr_seconds:
+        fps+=1
+    else:
+        fps = 0
+        curr_seconds+=1
     for key in get_keys():
         if   key == 'w': camera.move(( 0,  MOVE_STEP, 0))   # вперёд (Y это глубина)
         elif key == 's': camera.move(( 0, -MOVE_STEP, 0))
@@ -42,6 +51,7 @@ while True:
     # os.system("cls")
 
     print(image)
+    print("FPS: ",fps) # Внести в функцию рендеринга позже
     # camera.rotation_angle[0]+=0.05
     # camera.coord[0]-=0.04
     

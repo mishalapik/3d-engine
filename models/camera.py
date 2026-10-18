@@ -1,4 +1,6 @@
 import math
+from math_functions import add
+import numpy as np 
 class Camera:
     def __init__(
             self,
@@ -13,6 +15,7 @@ class Camera:
         self.direction_vector = direction_vector
         self.screen_height = screen_height
         self.screen_width = screen_width
+
     def move(self,direction:tuple):
         self.coord[0]+=direction[0]
         self.coord[1]+=direction[1]
@@ -51,6 +54,67 @@ class Camera:
             new_z = -y*math.sin(x_angle)+z*math.cos(x_angle)
     
             return (new_x,new_y,new_z)
+    
+    def get_pixel_coord_matrix_np(self, H, W):
+        d = self.direction_vector[1]
+
+        # левый НИЖНИЙ угол экрана, как в твоей функции
+        corner = np.array(self.rotate_point((-self.screen_width/2, d, -self.screen_height/2)))
+
+        dx = np.array(self.rotate_point((self.screen_width/W, 0, 0)))    # шаг вправо
+        dz = np.array(self.rotate_point((0, 0, self.screen_height/H)))   # шаг ВВЕРХ (плюс)
+
+        i = np.arange(H) + 0.5   # строки: 0 - низ экрана
+        j = np.arange(W) + 0.5
+
+        return corner + i[:, None, None]*dz + j[None, :, None]*dx
+
+
+    def get_pixel_coord_matrix(
+        self,
+        matrix_height,
+        matrix_width
+    ):
+        screen_height =  self.screen_height
+        screen_width = self.screen_width
+        # Алгоритм:
+        # найти угол
+        # найти векторы смещения для каждого нового пикселя
+        # пройтись по всем 
+        #
+        # 
+        # Локальные координаты угла
+        screen_corner_y = self.direction_vector[1]
+        screen_corner_x = -screen_width/2
+        screen_corner_z = -screen_height/2
+
+        # Находим глобальные координаты угла
+        world_corner_coord =  self.rotate_point(
+            (screen_corner_x,
+            screen_corner_y,
+            screen_corner_z)
+        )
+        # найти векторы смещения по осям x и z
+
+        local_x_shift_vector = ((screen_width/matrix_width),0,0)
+        local_z_shift_vector = (0,0,(screen_height/matrix_height))
+
+        world_x_shift_vector = self.rotate_point(local_x_shift_vector) 
+        world_z_shift_vector = self.rotate_point(local_z_shift_vector)
+
+        pixel_coord_matrix = [[] for i in range(matrix_height)]
+        # тут нужно будет прибавлять векторы для каждого пикселя.
+        curr_string_start = world_corner_coord
+        curr_pixel_coord = curr_string_start
+        for i in range(matrix_height):
+            for j in range(matrix_width):
+                pixel_coord_matrix[i].append(add(curr_pixel_coord,self.coord))
+                curr_pixel_coord = add(curr_pixel_coord,world_x_shift_vector)
+            curr_string_start = add(curr_string_start,world_z_shift_vector)
+            curr_pixel_coord = curr_string_start
+        return pixel_coord_matrix
+    
+
 
     def get_pixel_coord(
         self,
@@ -85,4 +149,5 @@ class Camera:
         # Тут надо научиться вычислять глобальные координаты
 
         return(world_x,world_y,world_z)
+    
             
