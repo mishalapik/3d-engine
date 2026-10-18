@@ -30,10 +30,10 @@ while True:
     for key in get_keys():
         if   key == 'w': camera.move(( 0,  MOVE_STEP, 0))   # вперёд (Y это глубина)
         elif key == 's': camera.move(( 0, -MOVE_STEP, 0))
-        elif key == 'a': camera.move((-MOVE_STEP, 0, 0))
-        elif key == 'd': camera.move(( MOVE_STEP, 0, 0))
-        elif key == 'left':  camera.rotate(( 0, 0, -TURN_STEP))   # поворот влево-вправо
-        elif key == 'right': camera.rotate(( 0, 0,  TURN_STEP))
+        elif key == 'a': camera.move((MOVE_STEP, 0, 0))
+        elif key == 'd': camera.move((- MOVE_STEP, 0, 0))
+        elif key == 'left':  camera.rotate(( 0, 0, TURN_STEP))   # поворот влево-вправо
+        elif key == 'right': camera.rotate(( 0, 0, -TURN_STEP))
         elif key == 'up':    camera.rotate(( TURN_STEP, 0, 0))    # наклон вверх-вниз
         elif key == 'down':  camera.rotate((-TURN_STEP, 0, 0))
 

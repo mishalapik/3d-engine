@@ -15,15 +15,22 @@ def render(camera:Camera,object:Object3D,screenDim:tuple)->str:
         pixels_vertical,
         pixels_horizontal
     )
-
+    
+    planes = []
+    for f in object.faces:
+        curr_face = [world_vertices[x] for x in f]
+        plane = plane_from_points(curr_face[0],curr_face[1],curr_face[2])
+        planes.append(plane)
+    
     for i in range(pixels_vertical):
         for j in range(pixels_horizontal):
             pixel_coord = pixel_coord_matrix[i][j]
             camera_ancor_coord = tuple(camera.coord)
             line = line_from_points(camera_ancor_coord,pixel_coord)
-            for f in object.faces:
+            for k,f in enumerate(object.faces):
                 curr_face = [world_vertices[x] for x in f]
-                plane = plane_from_points(curr_face[0],curr_face[1],curr_face[2])
+                # plane = plane_from_points(curr_face[0],curr_face[1],curr_face[2])
+                plane=planes[k]
                 
                 intersection = line_plane_intersection(
                     n = plane[0],
